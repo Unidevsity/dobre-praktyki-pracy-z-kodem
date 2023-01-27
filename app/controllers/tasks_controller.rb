@@ -3,7 +3,8 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    @tasks = Task.where(completed: false)
+    @completed_tasks = Task.where(completed: true)
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -22,27 +23,31 @@ class TasksController < ApplicationController
   # POST /tasks or /tasks.json
   def create
     @task = Task.new(task_params)
-
+    @task.save!
     respond_to do |format|
-      if @task.save
-        format.html { redirect_to task_url(@task), notice: "Task was successfully created." }
-        format.json { render :show, status: :created, location: @task }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace('new_task', partial: "tasks/form", locals: { task: Task.new })
       end
     end
   end
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
+    @task.update(task_params)
+
     respond_to do |format|
-      if @task.update(task_params)
-        format.html { redirect_to task_url(@task), notice: "Task was successfully updated." }
-        format.json { render :show, status: :ok, location: @task }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+      format.turbo_stream do
+        if @task.completed
+          render turbo_stream: [
+            turbo_stream.remove(@task),
+            turbo_stream.append("completed_tasks", partial: "tasks/task", locals: { task: @task })
+          ]
+        else
+          render turbo_stream: [
+            turbo_stream.remove(@task),
+            turbo_stream.append("tasks", partial: "tasks/task", locals: { task: @task })
+          ]
+        end
       end
     end
   end
@@ -51,10 +56,7 @@ class TasksController < ApplicationController
   def destroy
     @task.destroy
 
-    respond_to do |format|
-      format.html { redirect_to tasks_url, notice: "Task was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    head :ok
   end
 
   private
