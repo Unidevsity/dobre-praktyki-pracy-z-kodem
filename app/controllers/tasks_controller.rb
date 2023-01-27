@@ -3,8 +3,8 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.where(completed: false)
-    @completed_tasks = Task.where(completed: true)
+    @tasks = current_user.tasks.where(completed: false)
+    @completed_tasks = current_user.tasks.where(completed: true)
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -22,11 +22,11 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = current_user.tasks.new(task_params)
     @task.save!
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace('new_task', partial: "tasks/form", locals: { task: Task.new })
+        render turbo_stream: turbo_stream.replace('new_task', partial: "tasks/form", locals: { task: current_user.tasks.new })
       end
     end
   end
@@ -62,7 +62,7 @@ class TasksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_task
-      @task = Task.find(params[:id])
+      @task = current_user.tasks.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
