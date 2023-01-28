@@ -23,10 +23,17 @@ class TasksController < ApplicationController
   # POST /tasks or /tasks.json
   def create
     @task = current_user.tasks.new(task_params)
-    @task.save!
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace('new_task', partial: "tasks/form", locals: { task: current_user.tasks.new })
+    if @task.save
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace('new_task', partial: "tasks/form", locals: { task: current_user.tasks.new })
+        end
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace('new_task', partial: "tasks/form", locals: { task: @task })
+        end
       end
     end
   end
@@ -60,13 +67,14 @@ class TasksController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_task
-      @task = current_user.tasks.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def task_params
-      params.require(:task).permit(:title, :completed)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_task
+    @task = current_user.tasks.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def task_params
+    params.require(:task).permit(:title, :completed)
+  end
 end

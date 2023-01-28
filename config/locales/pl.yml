@@ -1,0 +1,25 @@
+pl:
+  tasks: Zadania
+  add_new_task: Dodaj nowe zadanie
+  todo: Do zrobienia
+  completed: Zrobione
+  activerecord:
+    models:
+      task: Zadanie
+    attributes:
+      task:
+        title: Tytuł
+        description: Opis
+        completed: Zrobione
+    errors:
+      template:
+        header:
+          one: "1 błąd uniemożliwia zapisanie %{model}:"
+          other: "%{count} errors prohibited this %{model} from being saved"
+      models:
+        task:
+          attributes:
+            title:
+              blank: Nie może być pusty
+            description:
+              blank: Nie może być puste

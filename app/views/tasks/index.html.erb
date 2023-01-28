@@ -1,27 +1,50 @@
+
 <%= turbo_stream_from :tasks %>
 <%= turbo_stream_from :completed_tasks %>
 <div class="w-full">
+  <%= button_to 'Log out', destroy_user_session_path, method: :delete %>
+  <p>
+    Email: <%= current_user.email %>
+  </p>
+  <p>
+    Language <%= current_user.language %>
+  </p>
+  <p>
+    Change Language
+    <div class="flex flex-row">
+      <%= button_to 'pl', change_language_path(language: 'pl'), method: :post, class: 'border border-2 border-green-400' %>
+      <%= button_to 'en', change_language_path(language: 'en'), method: :post, class: 'border border-2 border-red-400 ml-4' %>
+    </div>
+  </p>
   <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
   <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Tasks</h1>
+    <h1 class="font-bold text-4xl">
+      <%= t('tasks') %>
+    </h1>
   </div>
 
-  <h2 class="font-bold">Add new task </h2>
+  <h2 class="font-bold">
+    <%= t('add_new_task') %>
+  </h2>
   <%= turbo_frame_tag 'new_task' do %>
     <%= render 'form', task: Task.new %>
   <% end %>
 
   <hr />
-  <h1 class="font-bold text-4xl">TODO</h1>
+  <h1 class="font-bold text-4xl">
+    <%= t('todo') %>
+  </h1>
   <div id="tasks" class="min-w-full">
     <%= render @tasks %>
   </div>
 
   <hr />
-  <h1 class="font-bold text-4xl">Completed</h1>
+  <h1 class="font-bold text-4xl">
+    <%= t('completed') %>
+  </h1>
   <div id="completed_tasks" class="min-w-full">
     <%= render @completed_tasks %>
   </div>
