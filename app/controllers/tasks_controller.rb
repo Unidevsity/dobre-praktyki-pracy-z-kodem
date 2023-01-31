@@ -22,8 +22,8 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = current_user.tasks.new(task_params)
-    if @task.save
+    @task = current_user.tasks.new
+    if @task.save!
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace('new_task', partial: "tasks/form", locals: { task: current_user.tasks.new })
