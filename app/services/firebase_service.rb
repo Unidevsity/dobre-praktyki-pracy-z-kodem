@@ -5,6 +5,7 @@ class FirebaseService
   def self.send_notification(user, message)
     return unless user.firebase_token
 
+    sleep 10
     uri = URI.parse('https://fcm.googleapis.com/fcm/send')
     request = Net::HTTP::Post.new(uri)
     request.content_type = 'application/json'
@@ -27,7 +28,5 @@ class FirebaseService
                                'to' => user.firebase_token
                              })
     return OpenStruct.new(success: true)
-  rescue FirebaseConnectionError => e
-    return OpenStruct.new(success: false, errors: ['Firebase connection error'])
   end
 end

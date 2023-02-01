@@ -1,11 +1,14 @@
 class ConfirmOrder
 
-
   def call(order)
-    return unless OrderPolicy.should_be_confirmed?(order)
+    unless OrderPolicy.should_be_confirmed?(order)
+      return OpenStruct.new(success: false, result: order)
+    end
     confirm_order(order)
     send_notification_confirmation(order)
-    order
+    OpenStruct.new(success: true, result: order)
+  rescue FirebaseService::FirebaseConnectionError => e
+    return OpenStruct.new(success: false, errors: ['Firebase connection error'])
   end
 
   private

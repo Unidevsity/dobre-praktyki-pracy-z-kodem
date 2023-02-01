@@ -2,9 +2,9 @@ class Order
 
   attr_reader :confirmed, :user
 
-  def initialize
+  def initialize(user)
     @confirmed = false
-    @user = User.new
+    @user = user
     @total = 0
   end
 
