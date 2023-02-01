@@ -6,6 +6,8 @@ class FirebaseService
     return unless user.firebase_token
 
     sleep 10
+
+
     uri = URI.parse('https://fcm.googleapis.com/fcm/send')
     request = Net::HTTP::Post.new(uri)
     request.content_type = 'application/json'
