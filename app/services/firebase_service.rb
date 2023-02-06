@@ -7,6 +7,7 @@ class FirebaseService
 
     sleep 10
 
+    return true
 
     uri = URI.parse('https://fcm.googleapis.com/fcm/send')
     request = Net::HTTP::Post.new(uri)

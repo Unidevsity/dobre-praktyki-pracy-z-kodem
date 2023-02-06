@@ -2,8 +2,7 @@ describe OrderPolicy do
   describe '.should_be_confirmed?' do
     context 'when order is confirmable and user is present' do
       it 'returns true' do
-        order = Order.new(User.new)
-        allow(order).to receive(:confirmable?).and_return(true)
+        order = instance_double(Order, user: double, confirmable?:true)
         expect(OrderPolicy.should_be_confirmed?(order)).to eq true
       end
 
@@ -11,8 +10,7 @@ describe OrderPolicy do
 
     context 'when order is not confirmable' do
       it 'returns false' do
-        order = Order.new(User.new)
-        allow(order).to receive(:confirmable?).and_return(false)
+        order = instance_double(Order, user: double, confirmable?: false)
         expect(OrderPolicy.should_be_confirmed?(order)).to eq false
       end
     end
